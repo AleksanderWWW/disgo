@@ -50,7 +50,7 @@ func sender() {
 				ExerciseID: 2,
 			},
 			ForceId:               3,
-			NumVariableParameters: 5,
+			NumVariableParameters: 0,
 		},
 	}
 	var buf bytes.Buffer
