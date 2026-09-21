@@ -7,24 +7,15 @@ import (
 )
 
 func ParseEntityStatePDU(reader io.Reader) (*EntityStatePDU, error) {
-	header := EntityHeader{}
-	err := binary.Read(reader, binary.BigEndian, &header)
-	if err != nil {
-		return nil, err
-	}
-
-	if header.PDUType != PDUTypeEntityState {
-		return nil, fmt.Errorf(
-			"invalid PDU type: expected: %d, actual: %d", PDUTypeEntityState, header.PDUType,
-		)
-	}
-
 	var pdu EntityStatePDU
-	pdu.Header = header
 
-	err = binary.Read(reader, binary.BigEndian, &pdu.Id)
+	err := binary.Read(reader, binary.BigEndian, &pdu)
 	if err != nil {
 		return nil, err
+	}
+
+	if pdu.Header.PDUType != PDUTypeEntityState {
+		return nil, fmt.Errorf("invalid PDU type: expected: 1, got: %d", pdu.Header.PDUType)
 	}
 
 	return &pdu, nil
