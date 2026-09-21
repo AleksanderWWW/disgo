@@ -46,12 +46,15 @@ func receiver() {
 
 func sender() {
 	msg := pdu.EntityStatePDU{
-		Header: pdu.EntityHeader{
+		Base: pdu.EntityStateBase{
+			Header: pdu.EntityHeader{
 			PDUType: 1,
 			ExerciseID: 2,
 		},
 		ForceId: 3,
 		NumVariableParameters: 5,
+		},
+		
 	}
 	var buf bytes.Buffer
 
