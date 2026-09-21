@@ -29,7 +29,6 @@ func TestEntityStatePduParse(t *testing.T) {
 	assert.Equal(t, uint16(144), data.Header.Length)
 }
 
-
 func TestEntityStatePduSerialize(t *testing.T) {
 	f, err := os.Open("testfiles/EntityStatePdu-26.raw")
 	if err != nil {
