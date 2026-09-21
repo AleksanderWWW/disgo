@@ -1,5 +1,35 @@
 package pdu
 
+import (
+	"encoding/binary"
+	"fmt"
+	"io"
+)
+
+func ParseEntityStatePDU(reader io.Reader) (*EntityStatePDU, error) {
+	header := EntityHeader{}
+	err := binary.Read(reader, binary.BigEndian, &header)
+	if err != nil {
+		return nil, err
+	}
+
+	if header.PDUType != PDUTypeEntityState {
+		return nil, fmt.Errorf(
+			"invalid PDU type: expected: %d, actual: %d", PDUTypeEntityState, header.PDUType,
+		)
+	}
+
+	var pdu EntityStatePDU
+	pdu.Header = header
+
+	err = binary.Read(reader, binary.BigEndian, &pdu.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pdu, nil
+}
+
 type EntityStatePDU struct {
 	Header                  EntityHeader
 	Id                      EntityId
@@ -56,4 +86,8 @@ type EntityId struct {
 type SimulationAddress struct {
 	Site        uint16
 	Application uint16
+}
+
+func (pdu EntityStatePDU) Serialize(w io.Writer) error {
+	return binary.Write(w, binary.BigEndian, pdu)
 }
