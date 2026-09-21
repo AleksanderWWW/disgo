@@ -36,8 +36,8 @@ func ParseEntityStatePDU(reader io.Reader) (*EntityStatePDU, error) {
 }
 
 type EntityStatePDU struct {
-	Base 					EntityStateBase
-	VariableParameters      VariableParameterList
+	Base               EntityStateBase
+	VariableParameters VariableParameterList
 }
 
 type EntityStateBase struct {
@@ -52,23 +52,22 @@ type EntityStateBase struct {
 	Orientation             Vector3Float
 	Appearance              uint32
 	DeadReckoningParameters [40]byte // 40-byte fixed block
-	Marking                 EntityMarking 
+	Marking                 EntityMarking
 	Capabilities            uint32
 }
-
 
 type VariableParameterList struct {
 	Params []VariableParameter
 }
 
 type VariableParameter struct {
-	RecordType uint8
+	RecordType   uint8
 	RecordLength uint8
-	Data [14]byte
+	Data         [14]byte
 }
 
 type EntityMarking struct {
-	Val [12]byte  // 1-byte character set + 11-byte string/padding
+	Val [12]byte // 1-byte character set + 11-byte string/padding
 }
 
 func (em EntityMarking) String() string {

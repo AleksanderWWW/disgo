@@ -18,16 +18,16 @@ func TestEntityStatePduParse(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, uint8(6), data.Base.Header.ProtocolVersion)
-	assert.Equal(t, uint8(7),  data.Base.Header.ExerciseID)
-	assert.Equal(t, uint8(1),  data.Base.Header.PDUType)
-	assert.Equal(t, uint8(1),  data.Base.Header.ProtocolFamily)
-	assert.Equal(t, uint32(2003426),  data.Base.Header.Timestamp)
-	assert.Equal(t, uint16(144),  data.Base.Header.Length)
+	assert.Equal(t, uint8(7), data.Base.Header.ExerciseID)
+	assert.Equal(t, uint8(1), data.Base.Header.PDUType)
+	assert.Equal(t, uint8(1), data.Base.Header.ProtocolFamily)
+	assert.Equal(t, uint32(2003426), data.Base.Header.Timestamp)
+	assert.Equal(t, uint16(144), data.Base.Header.Length)
 
-	assert.Equal(t, uint8(1),  data.Base.ForceId)
-	assert.Equal(t, uint8(0),  data.Base.NumVariableParameters)
+	assert.Equal(t, uint8(1), data.Base.ForceId)
+	assert.Equal(t, uint8(0), data.Base.NumVariableParameters)
 
-	assert.Equal(t, "26",  data.Base.Marking.String())
+	assert.Equal(t, "26", data.Base.Marking.String())
 }
 
 func TestEntityStatePduSerialize(t *testing.T) {
