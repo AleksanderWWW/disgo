@@ -22,6 +22,7 @@ func TestEntityStatePduParse(t *testing.T) {
 	assert.Equal(t, uint8(1), data.Base.Header.PDUType)
 	assert.Equal(t, uint8(1), data.Base.Header.ProtocolFamily)
 	assert.Equal(t, uint32(2003426), data.Base.Header.Timestamp.Value())
+	assert.True(t, data.Base.Header.Timestamp.Relative())
 	assert.Equal(t, uint16(144), data.Base.Header.Length)
 
 	assert.Equal(t, uint8(1), data.Base.ForceId)
