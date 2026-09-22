@@ -1,15 +1,15 @@
 package pdu
 
 import (
-	"time"
 	"bytes"
 	"encoding/binary"
 	"fmt"
 	"io"
+	"time"
 )
 
 const (
-	AbsoluteFlagMask    = 0x80000000 // 1000 0000 ... in binary
+	AbsoluteFlagMask   = 0x80000000 // 1000 0000 ... in binary
 	TimestampValueMask = 0x7FFFFFFF // 0111 1111 ... in binary
 
 	// unitsPerHour is 2^31, the total units in one hour.
@@ -49,7 +49,6 @@ func GetCurrentTimestamp(absolute bool) EntityTimestamp {
 
 	return timestampVal
 }
-
 
 func ParseEntityStatePDU(reader io.Reader) (*EntityStatePDU, error) {
 	var pdu EntityStatePDU
@@ -134,7 +133,6 @@ type EntityHeader struct {
 }
 
 type EntityTimestamp uint32
-
 
 func (et EntityTimestamp) Absolute() bool {
 	// 0x80000000 is 1000 0000... in binary (Bit 0 set).
