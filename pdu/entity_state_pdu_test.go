@@ -49,3 +49,18 @@ func TestEntityStatePduSerialize(t *testing.T) {
 
 	assert.Equal(t, data, data1)
 }
+
+
+func TestGetCurrentTimestap(t *testing.T) {
+	now := GetCurrentTimestamp(true)
+
+	assert.True(t, now.Absolute())
+	assert.True(t, !now.Relative())
+
+	now = GetCurrentTimestamp(false)
+
+	assert.True(t, now.Relative())
+	assert.True(t, !now.Absolute())
+
+	
+}
