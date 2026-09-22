@@ -5,7 +5,50 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"time"
 )
+
+const (
+	AbsoluteFlagMask   = 0x80000000 // 1000 0000 ... in binary
+	TimestampValueMask = 0x7FFFFFFF // 0111 1111 ... in binary
+
+	// unitsPerHour is 2^31, the total units in one hour.
+	unitsPerHour = 2147483648
+	// nsPerUnit is 3600 seconds / 2^31 expressed in nanoseconds.
+	nsPerUnit = 1676.3806
+)
+
+// GetCurrentTimestamp uses bitwise operators and masks to build
+// a semantic DIS timestamp from the system clock.
+func GetCurrentTimestamp(absolute bool) EntityTimestamp {
+	// 1. Get current time
+	now := time.Now()
+
+	// 2. Find start of the current hour
+	currentHour := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
+
+	// 3. Calculate time passed since top of the hour (in nanoseconds)
+	nsSinceHour := now.Sub(currentHour).Nanoseconds()
+
+	// 4. Convert nanoseconds to arbitrary DIS units
+	// timeUnits = (nanoseconds / nanoseconds_per_unit)
+	unitsPassed := uint32(float64(nsSinceHour) / nsPerUnit)
+
+	// --- Final Assembly Using Bitwise Ops ---
+
+	// Start by ensuring only the lower 31 bits are populated
+	// 0x7FFFFFFF ensures the top bit is clear (0).
+	timestampVal := EntityTimestamp(unitsPassed & TimestampValueMask)
+
+	// If absolute time is requested, use bitwise OR to FORCE the top bit to 1.
+	// We don't need a relative case because ORing with 0 has no effect.
+	if absolute {
+		// (1xxxx...) | (10000...) = (1xxxx...)
+		timestampVal = timestampVal | EntityTimestamp(AbsoluteFlagMask)
+	}
+
+	return timestampVal
+}
 
 func ParseEntityStatePDU(reader io.Reader) (*EntityStatePDU, error) {
 	var pdu EntityStatePDU
@@ -84,9 +127,28 @@ type EntityHeader struct {
 	ExerciseID      uint8
 	PDUType         uint8
 	ProtocolFamily  uint8
-	Timestamp       uint32
+	Timestamp       EntityTimestamp
 	Length          uint16
 	PDUStatus       uint16
+}
+
+type EntityTimestamp uint32
+
+func (et EntityTimestamp) Absolute() bool {
+	// 0x80000000 is 1000 0000... in binary (Bit 0 set).
+	// Since we are big-endian in DIS, Bit 0 is the most significant bit.
+	const AbsoluteFlagMask = 0x80000000
+	return (uint32(et) & AbsoluteFlagMask) != 0
+}
+
+func (et EntityTimestamp) Relative() bool {
+	return !et.Absolute()
+}
+
+func (et EntityTimestamp) Value() uint32 {
+	// 0x7FFFFFFF clears Bit 0, leaving Bits 1-31.
+	const TimestampValueMask = 0x7FFFFFFF
+	return uint32(et) & TimestampValueMask
 }
 
 type WorldCoordinates struct {

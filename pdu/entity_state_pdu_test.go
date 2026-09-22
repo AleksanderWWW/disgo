@@ -21,7 +21,8 @@ func TestEntityStatePduParse(t *testing.T) {
 	assert.Equal(t, uint8(7), data.Base.Header.ExerciseID)
 	assert.Equal(t, uint8(1), data.Base.Header.PDUType)
 	assert.Equal(t, uint8(1), data.Base.Header.ProtocolFamily)
-	assert.Equal(t, uint32(2003426), data.Base.Header.Timestamp)
+	assert.Equal(t, uint32(2003426), data.Base.Header.Timestamp.Value())
+	assert.True(t, data.Base.Header.Timestamp.Relative())
 	assert.Equal(t, uint16(144), data.Base.Header.Length)
 
 	assert.Equal(t, uint8(1), data.Base.ForceId)
@@ -47,4 +48,17 @@ func TestEntityStatePduSerialize(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, data, data1)
+}
+
+func TestGetCurrentTimestap(t *testing.T) {
+	now := GetCurrentTimestamp(true)
+
+	assert.True(t, now.Absolute())
+	assert.True(t, !now.Relative())
+
+	now = GetCurrentTimestamp(false)
+
+	assert.True(t, now.Relative())
+	assert.True(t, !now.Absolute())
+
 }
