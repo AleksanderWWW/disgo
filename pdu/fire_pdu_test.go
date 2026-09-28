@@ -44,6 +44,10 @@ func TestParseFirePDU(t *testing.T) {
 		t.Errorf("Expected PDU Type %d, got %d", PDUTypeFire, firePDU.Header.PDUType)
 	}
 
+	if !firePDU.Header.Timestamp.Absolute() {
+		t.Error("Expected PDU timestamp to be absolute")
+	}
+
 	if firePDU.FiringID.Number != 10 {
 		t.Errorf("Expected Firing Entity ID 10, got %d", firePDU.FiringID.Number)
 	}
