@@ -1,6 +1,5 @@
 package pdu
 
-
 // PDU Header - 12 bytes
 type PDUHeader struct {
 	ProtocolVersion uint8
@@ -25,11 +24,11 @@ type EntityType struct {
 
 // Munition Description type - 16 bytes
 type MunitionDescription struct {
-	Type EntityType
-	Warhead uint16
-	Fuse uint16
+	Type     EntityType
+	Warhead  uint16
+	Fuse     uint16
 	Quantity uint16
-	Rate uint16
+	Rate     uint16
 }
 
 // Entity ID type - 6 bytes
