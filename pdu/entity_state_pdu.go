@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	// these constants are useful when calculating DIS-specific timestamp
 	AbsoluteFlagMask   = 0x80000000 // 1000 0000 ... in binary
 	TimestampValueMask = 0x7FFFFFFF // 0111 1111 ... in binary
 
@@ -83,8 +84,9 @@ type EntityStatePDU struct {
 	VariableParameters VariableParameterList
 }
 
+// Non-variable part of Entity State PDU - 144 bytes
 type EntityStateBase struct {
-	Header                  EntityHeader
+	Header                  PDUHeader
 	Id                      EntityId
 	ForceId                 uint8
 	NumVariableParameters   uint8
@@ -103,6 +105,7 @@ type VariableParameterList struct {
 	Params []VariableParameter
 }
 
+// Variable parameter type of Entity State PDU - 16 bytes
 type VariableParameter struct {
 	RecordType   uint8
 	RecordLength uint8
@@ -122,16 +125,6 @@ func (em EntityMarking) String() string {
 	return trimmed[1:]
 }
 
-type EntityHeader struct {
-	ProtocolVersion uint8
-	ExerciseID      uint8
-	PDUType         uint8
-	ProtocolFamily  uint8
-	Timestamp       EntityTimestamp
-	Length          uint16
-	PDUStatus       uint16
-}
-
 type EntityTimestamp uint32
 
 func (et EntityTimestamp) Absolute() bool {
@@ -149,38 +142,6 @@ func (et EntityTimestamp) Value() uint32 {
 	// 0x7FFFFFFF clears Bit 0, leaving Bits 1-31.
 	const TimestampValueMask = 0x7FFFFFFF
 	return uint32(et) & TimestampValueMask
-}
-
-type WorldCoordinates struct {
-	X float64
-	Y float64
-	Z float64
-}
-
-type Vector3Float struct {
-	X float32
-	Y float32
-	Z float32
-}
-
-type EntityType struct {
-	Kind        uint8
-	Domain      uint8
-	Country     uint16
-	Category    uint8
-	Subcategory uint8
-	Specific    uint8
-	Extra       uint8
-}
-
-type EntityId struct {
-	Address SimulationAddress
-	Number  uint16
-}
-
-type SimulationAddress struct {
-	Site        uint16
-	Application uint16
 }
 
 func (pdu EntityStatePDU) Serialize(w io.Writer) error {
