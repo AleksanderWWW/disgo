@@ -45,7 +45,7 @@ func receiver() {
 func sender() {
 	msg := pdu.EntityStatePDU{
 		Base: pdu.EntityStateBase{
-			Header: pdu.EntityHeader{
+			Header: pdu.PDUHeader{
 				PDUType:    1,
 				ExerciseID: 2,
 			},
