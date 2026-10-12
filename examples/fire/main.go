@@ -44,24 +44,24 @@ func receiver() {
 
 func sender() {
 	msg := pdu.FirePDU{
-			Header: pdu.PDUHeader{
-				PDUType:    2,
-				ExerciseID: 2,
+		Header: pdu.PDUHeader{
+			PDUType:    2,
+			ExerciseID: 2,
+		},
+		FiringID: pdu.EntityId{
+			Address: pdu.SimulationAddress{
+				Site:        1,
+				Application: 2,
 			},
-			FiringID: pdu.EntityId{
-				Address: pdu.SimulationAddress{
-					Site: 1,
-					Application: 2,
-				},
-				Number: 5,
+			Number: 5,
+		},
+		TargetID: pdu.EntityId{
+			Address: pdu.SimulationAddress{
+				Site:        1,
+				Application: 2,
 			},
-			TargetID: pdu.EntityId{
-				Address: pdu.SimulationAddress{
-					Site: 1,
-					Application: 2,
-				},
-				Number: 6,
-			},
+			Number: 6,
+		},
 	}
 	var buf bytes.Buffer
 
